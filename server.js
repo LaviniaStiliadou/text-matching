@@ -9,12 +9,6 @@ app.use(cors());
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 
-
-app.route('/api/hello').get((req, res) => {
-	console.log('got request!');
-    res.send("Hello World");
-});
-
 //expects object {input: string, algodata: algorithmdata}
 app.route('/api/matcher').post((req, res) => {
 	console.log('got post matching request!');

@@ -6,7 +6,8 @@ var openai = require("./openaifunctionality.js");
 module.exports = function(data, isRake, useOpenAI) {
 	
 	if(useOpenAI){
-		return openai("Can you rephrase the following sentence without negations: " + data.input).then((resolve) => {
+		return openai("Can you rephrase the following sentence without negations and can you extract the functional and non-functional requirements of the text and write them in two arrays, one array for functional requirements and one for non-functional requirements \n"+
+			+ "the individual requirements should be separated by commas. The format for the response should be json:"+ data.input).then((resolve) => {
 			console.log("resolve");
 			console.log(resolve);
 			return matching(data, isRake, resolve.choices[0].message.content, useOpenAI);
