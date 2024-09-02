@@ -7,7 +7,7 @@ module.exports = function(data, isRake, useOpenAI) {
 	
 	if(useOpenAI){
 		return openai("Can you rephrase the following sentence without negations and can you extract the functional and non-functional requirements of the text and write them in two arrays, one array for functional requirements and one for non-functional requirements \n"+
-			+ "the individual requirements should be separated by commas. The format for the response should be json:"+ data.input).then((resolve) => {
+			+ "the individual requirements should be separated by commas. The format for the response should be json: "+ data.input).then((resolve) => {
 			console.log("resolve");
 			console.log(resolve);
 			return matching(data, isRake, resolve.choices[0].message.content, useOpenAI);
@@ -22,6 +22,9 @@ module.exports = function(data, isRake, useOpenAI) {
 	function matching(data, isRake, resultvalue, isRephrased){
 		
 		var infos = data.algodata;
+
+		console.log("The infos");
+		console.log(infos)
 		var datainput = resultvalue;
 		console.log("input:");
 	    console.log(data.input);
@@ -56,18 +59,15 @@ module.exports = function(data, isRake, useOpenAI) {
 				//quadruple value
 				var applicationareaskeywords = []; 
 				var problemtypeskeywords = [];
-				algorithminfo.data.applicationAreas.forEach(word => {
-					applicationareaskeywords.push(word.label);
-					applicationareaskeywords.push(word.label);
-					applicationareaskeywords.push(word.label);
-					applicationareaskeywords.push(word.label);
-				});
-				algorithminfo.data.problemTypes.forEach(word => {
-					problemtypeskeywords.push(word.label);
-					problemtypeskeywords.push(word.label);
-					problemtypeskeywords.push(word.label);
-					problemtypeskeywords.push(word.label);
-				});
+				if (algorithminfo.data.applicationAreas && algorithminfo.data.applicationAreas.length > 0) {
+					algorithminfo.data.applicationAreas.forEach(word => {
+						applicationareaskeywords.push(word.label);
+						applicationareaskeywords.push(word.label);
+						applicationareaskeywords.push(word.label);
+						applicationareaskeywords.push(word.label);
+					});
+				}
+				
 			
 				allkeywords.push({name: algorithminfo.name, 
 			                  keywords: intentkeywords.concat(intentkeywords).concat(problemkeywords, solutionkeywords)
@@ -75,6 +75,8 @@ module.exports = function(data, isRake, useOpenAI) {
 				});
 					
 			}else{
+				console.log("Bbbbb")
+				console.log(algorithminfo.data)
 				const intentkeywords = keyword_extractor.extract(algorithminfo.data.intent,{
 			    language:"english",
 			    remove_digits: true,
@@ -87,7 +89,7 @@ module.exports = function(data, isRake, useOpenAI) {
 			    return_changed_case:true,
 			    remove_duplicates: false
 		    });
-				const solutionkeywords = keyword_extractor.extract(algorithminfo.data.solution,{
+				const solutionkeywords = keyword_extractor.extract(algorithminfo.datasolution,{
 			    language:"english",
 			    remove_digits: true,
 			    return_changed_case:true,
@@ -97,18 +99,16 @@ module.exports = function(data, isRake, useOpenAI) {
 			//quadruple value
 			var applicationareaskeywords = []; 
 			var problemtypeskeywords = [];
-			algorithminfo.data.applicationAreas.forEach(word => {
-				applicationareaskeywords.push(word.label);
-				applicationareaskeywords.push(word.label);
-				applicationareaskeywords.push(word.label);
-				applicationareaskeywords.push(word.label);
-			});
-			algorithminfo.data.problemTypes.forEach(word => {
-				problemtypeskeywords.push(word.label);
-				problemtypeskeywords.push(word.label);
-				problemtypeskeywords.push(word.label);
-				problemtypeskeywords.push(word.label);
-			});
+			 
+			if (algorithminfo.data.applicationAreas && algorithminfo.data.applicationAreas.length > 0) {
+				algorithminfo.data.applicationAreas.forEach(word => {
+					applicationareaskeywords.push(word.label);
+					applicationareaskeywords.push(word.label);
+					applicationareaskeywords.push(word.label);
+					applicationareaskeywords.push(word.label);
+				});
+			}
+			
 			
 			allkeywords.push({name: algorithminfo.name, 
 			                  keywords: intentkeywords.concat(intentkeywords).concat(problemkeywords, solutionkeywords)
@@ -134,6 +134,7 @@ module.exports = function(data, isRake, useOpenAI) {
 			
 			console.log("input keywords");
 			console.log(extraction_result_input);
+			console.log(results)
 		}else{
 			extraction_result_input =
 	        keyword_extractor.extract(datainput,{
@@ -144,6 +145,7 @@ module.exports = function(data, isRake, useOpenAI) {
 		    });
 			console.log("input keywords");
 			console.log(extraction_result_input);
+			console.log(results)
 		}
 			
 		// cosine similarity with keywords
