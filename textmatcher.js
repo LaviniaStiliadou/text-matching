@@ -25,7 +25,7 @@ module.exports = function(data, isRake, useOpenAI) {
 
 		console.log("The infos");
 		console.log(infos)
-		var datainput = resultvalue;
+		var datainput = resultvalue.toLowerCase();
 		console.log("input:");
 	    console.log(data.input);
 		
@@ -110,7 +110,7 @@ module.exports = function(data, isRake, useOpenAI) {
 				algorithminfo.data.applicationAreas.forEach(word => {
 					console.log("applicationwwhw")
 					console.log(word)
-					applicationareaskeywords.push(word.split(" ")[0]);
+					applicationareaskeywords.push(word.split(" ")[0].toLowerCase());
 				});
 			}
 			
@@ -188,7 +188,8 @@ module.exports = function(data, isRake, useOpenAI) {
 
     function addKeysToDict(map, dict) {
         for (var key in map) {
-            dict[key] = true;
+			let k = key.toLowerCase()
+            dict[k] = true;
         }
     }
 
@@ -205,6 +206,9 @@ module.exports = function(data, isRake, useOpenAI) {
 
     function vecDotProduct(vecA, vecB) {
         var product = 0;
+		console.log(vecDotProduct)
+		console.log(vecA)
+		console.log(vecB)
         for (var i = 0; i < vecA.length; i++) {
             product += vecA[i] * vecB[i];
         }
@@ -236,7 +240,7 @@ module.exports = function(data, isRake, useOpenAI) {
         var termFreqB = termFreqMap(input);
 
         var dict = {};
-        //addKeysToDict(occurences, dict);
+        addKeysToDict(occurences, dict);
         addKeysToDict(termFreqB, dict);
 
         var termFreqVecA = termFreqMapToVector(occurences, dict);
